@@ -1,759 +1,708 @@
-Aquí está el código completo, listo para copiar y pegar en GitHub como index.html:
-html<link rel="preconnect" href="https://fonts.googleapis.com">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Menú de Hoy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-
 <style>
-  :root{
-    --chalk-bg:#FFCC1C;
-    --chalk-bg2:#FFD84D;
-    --chalk-line:#E0AC00;
-    --cream:#fffbf2;
-    --cream2:#fff5df;
-    --chili:#c0392b;
-    --chili-dark:#9c2e21;
-    --mustard:#BB29BB;
-    --ink:#26291f;
-    --ink-soft:#5c5e50;
-    --good:#BB29BB;
-    --purple:#BB29BB;
-  }
-  *{box-sizing:border-box;}
-  body{margin:0;padding:0;background:transparent;}
-  .app{
-    font-family:'Inter',sans-serif;
-    background: linear-gradient(to bottom, var(--chalk-bg2) 0%, var(--chalk-bg) 45%);
-    background-color:#FFCC1C;
-    min-height:100vh;
-    color:var(--purple);
-    padding:0 0 40px 0;
-    max-width:480px;
-    margin:0 auto;
-    position:relative;
-    overflow-x:hidden;
-  }
-  .app::before{
-    content:"";
-    position:absolute; inset:0;
-    background-image:
-      repeating-linear-gradient(0deg, rgba(66,42,110,0.03) 0px, rgba(66,42,110,0.03) 1px, transparent 1px, transparent 3px);
-    pointer-events:none;
-  }
-
-  header{
-    padding:28px 20px 18px 20px;
-    text-align:center;
-    position:relative;
-  }
-  .eyebrow{
-    font-size:11px;
-    letter-spacing:3px;
-    color:var(--purple);
-    opacity:0.75;
-    text-transform:uppercase;
-    font-weight:700;
-    margin-bottom:6px;
-  }
-  h1{
-    font-family:'Lora',serif;
-    font-weight:700;
-    font-style:italic;
-    font-size:34px;
-    margin:0;
-    color:var(--purple);
-    line-height:1.1;
-  }
-  h1 span{
-    display:block;
-    color:var(--purple);
-  }
-  .subtitle{
-    font-size:13px;
-    color:var(--purple);
-    opacity:0.7;
-    margin-top:8px;
-  }
-
-  .tabs{
-    display:flex;
-    gap:8px;
-    padding:4px 20px 16px 20px;
-  }
-  .tab{
-    flex:1;
-    text-align:center;
-    padding:11px 8px;
-    border-radius:10px;
-    font-weight:700;
-    font-size:13px;
-    cursor:pointer;
-    border:1.5px solid rgba(66,42,110,0.25);
-    background:rgba(66,42,110,0.06);
-    color:var(--purple);
-    transition:all .15s ease;
-    user-select:none;
-  }
-  .tab.active{
-    background:var(--purple);
-    border-color:var(--purple);
-    color:#FFCC1C;
-  }
-  #tabPublish{
-    background:var(--purple);
-    border-color:var(--purple);
-    color:#FFCC1C;
-  }
-  #tabPublish.active{
-    background:var(--purple);
-    border-color:var(--purple);
-    color:#FFCC1C;
-  }
-
-  .content{ padding:0 16px; }
-
-  /* --- FEED VIEW --- */
-  .filter-row{
-    display:flex;
-    gap:8px;
-    margin-bottom:16px;
-    overflow-x:auto;
-    padding-bottom:4px;
-  }
-  select.district-select{
-    flex:1;
-    background:#fff5df;
-    border:1.5px solid rgba(66,42,110,0.25);
-    color:var(--purple);
-    padding:10px 12px;
-    border-radius:9px;
-    font-family:'Inter',sans-serif;
-    font-size:13.5px;
-    font-weight:600;
-  }
-
-  .empty-state{
-    text-align:center;
-    padding:50px 20px;
-    color:var(--purple);
-    opacity:0.65;
-  }
-  .empty-state .big{ font-size:38px; margin-bottom:10px; }
-  .empty-state .msg{ font-size:14px; line-height:1.5; }
-
-  .ticket{
-    background:var(--cream);
-    border-radius:14px;
-    margin-bottom:16px;
-    overflow:hidden;
-    position:relative;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.28);
-    border:1px solid #ecd9b0;
-  }
-  .ticket::after{
-    content:"";
-    position:absolute; top:0; bottom:0; right:64px;
-    width:0;
-    border-left:2px dashed #e3cf9f;
-  }
-  .ticket-top{
-    display:flex;
-  }
-  .ticket-photo{
-    width:96px;
-    min-width:96px;
-    background:linear-gradient(135deg,#f1e2bd,#e7d3a2);
-    display:flex; align-items:center; justify-content:center;
-    font-size:30px;
-    background-size:cover;
-    background-position:center;
-  }
-  .ticket-body{
-    flex:1;
-    padding:12px 14px 12px 16px;
-  }
-  .ticket-negocio{
-    font-size:11px;
-    font-weight:800;
-    letter-spacing:0.5px;
-    text-transform:uppercase;
-    color:var(--purple);
-  }
-  .ticket-direccion{
-    font-family:'Lora',serif;
-    font-weight:600;
-    font-size:15px;
-    color:var(--ink);
-    line-height:1.3;
-    margin:3px 0 5px 0;
-  }
-  .ticket-direccion .pin{ margin-right:3px; }
-  .ticket-meta{
-    font-size:11.5px;
-    color:var(--ink-soft);
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-  }
-  .ticket-price-strip{
-    width:64px;
-    min-width:64px;
-    background:var(--purple);
-    color:#FFCC1C;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding:6px 4px;
-  }
-  .ticket-price-strip .s{ font-size:10px; opacity:0.85; margin-top:2px;}
-  .ticket-price-strip .p{ font-family:'Lora',serif; font-weight:700; font-size:19px; line-height:1; }
-  .ticket-bottom{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:9px 14px;
-    background:#fff5df;
-    border-top:1px dashed #e3cf9f;
-    font-size:11.5px;
-    color:var(--ink-soft);
-  }
-  .ticket-bottom .hora{ font-weight:700; color:var(--purple); }
-
-  /* --- PUBLISH VIEW --- */
-  .form-card{
-    background:var(--cream);
-    border-radius:16px;
-    padding:20px 18px 22px 18px;
-    color:var(--ink);
-    box-shadow:0 8px 24px rgba(0,0,0,0.3);
-  }
-  .form-title{
-    font-family:'Lora',serif;
-    font-weight:700;
-    font-style:italic;
-    font-size:22px;
-    margin:0 0 6px 0;
-    color:var(--purple);
-  }
-  .form-hint{
-    font-size:12.5px;
-    color:var(--ink-soft);
-    margin-bottom:16px;
-    line-height:1.5;
-  }
-  label{
-    display:block;
-    font-size:11.5px;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:0.4px;
-    color:var(--ink-soft);
-    margin:14px 0 6px 0;
-  }
-  input, select{
-    width:100%;
-    padding:11px 12px;
-    border-radius:9px;
-    border:1.5px solid #e6dcc0;
-    background:#fffdf7;
-    font-family:'Inter',sans-serif;
-    font-size:14.5px;
-    color:var(--ink);
-  }
-  input:focus, select:focus{ outline:2px solid var(--mustard); border-color:var(--mustard); }
-  .row2{ display:flex; gap:10px; }
-  .row2 > div{ flex:1; }
-
-  .publish-btn{
-    width:100%;
-    margin-top:20px;
-    padding:14px;
-    border:none;
-    border-radius:11px;
-    background:var(--purple);
-    color:#FFCC1C;
-    font-weight:800;
-    font-size:15px;
-    letter-spacing:0.3px;
-    cursor:pointer;
-    box-shadow:0 6px 14px rgba(66,42,110,0.35);
-  }
-  .publish-btn:active{ transform:translateY(1px); }
-  .publish-btn:disabled{ opacity:0.6; }
-
-  .toast{
-    position:fixed;
-    left:50%; bottom:24px;
-    transform:translateX(-50%);
-    background:var(--purple);
-    color:#FFCC1C;
-    padding:11px 18px;
-    border-radius:30px;
-    font-size:13.5px;
-    font-weight:700;
-    box-shadow:0 6px 18px rgba(0,0,0,0.35);
-    z-index:50;
-    animation: toastin .25s ease;
-  }
-  @keyframes toastin{ from{opacity:0; transform:translate(-50%,10px);} to{opacity:1; transform:translate(-50%,0);} }
-
-  .footnote{
-    text-align:center;
-    font-size:11px;
-    color:var(--purple);
-    opacity:0.6;
-    margin-top:18px;
-    padding:0 30px;
-    line-height:1.5;
-  }
-
-  /* --- LIVE MAP --- */
-  .map-card{
-    background:var(--cream);
-    border-radius:14px;
-    padding:12px 12px 14px 12px;
-    margin-bottom:16px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.22);
-    border:1px solid #ecd9b0;
-  }
-  .map-card-title{
-    font-size:11.5px;
-    font-weight:800;
-    letter-spacing:0.4px;
-    text-transform:uppercase;
-    color:var(--purple);
-    margin-bottom:8px;
-    display:flex;
-    align-items:center;
-    gap:6px;
-  }
-  #liveMap{
-    width:100%;
-    height:190px;
-    border-radius:10px;
-    background:#f1e2bd;
-    overflow:hidden;
-  }
-  .map-status{
-    font-size:11px;
-    color:var(--ink-soft);
-    margin-top:7px;
-    text-align:center;
-  }
-  .leaflet-popup-content{ font-family:'Inter',sans-serif; font-size:12.5px; }
-  .leaflet-popup-content b{ color:var(--purple); }
-
-  /* --- CAMERA / PHOTO CAPTURE --- */
-  .photo-capture-btn{
-    width:100%;
-    padding:12px;
-    border-radius:9px;
-    border:1.5px dashed #d8c48a;
-    background:#fffdf7;
-    color:var(--purple);
-    font-weight:700;
-    font-size:13.5px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:7px;
-  }
-  .photo-preview-wrap{
-    position:relative;
-    margin-top:8px;
-    border-radius:10px;
-    overflow:hidden;
-    display:none;
-  }
-  .photo-preview-wrap img{
-    width:100%;
-    max-height:170px;
-    object-fit:cover;
-    display:block;
-  }
-  .photo-remove-btn{
-    position:absolute;
-    top:8px; right:8px;
-    background:rgba(38,41,31,0.75);
-    color:#fff;
-    border:none;
-    border-radius:20px;
-    padding:5px 10px;
-    font-size:11px;
-    font-weight:700;
-    cursor:pointer;
-  }
+:root{
+  --chalk-bg:#FFCC1C;
+  --chalk-bg2:#FFD84D;
+  --chalk-line:#E0AC00;
+  --cream:#fffbf2;
+  --cream2:#fff5df;
+  --chili:#c0392b;
+  --chili-dark:#9c2e21;
+  --mustard:#BB29BB;
+  --ink:#26291f;
+  --ink-soft:#5c5e50;
+  --good:#BB29BB;
+  --purple:#BB29BB;
+}
+*{box-sizing:border-box;}
+body{margin:0;padding:0;background:transparent;}
+.app{
+  font-family:'Inter',sans-serif;
+  background: linear-gradient(to bottom, var(--chalk-bg2) 0%, var(--chalk-bg) 45%);
+  background-color:#FFCC1C;
+  min-height:100vh;
+  color:var(--purple);
+  padding:0 0 40px 0;
+  max-width:480px;
+  margin:0 auto;
+  position:relative;
+  overflow-x:hidden;
+}
+.app::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(66,42,110,0.03) 0px, rgba(66,42,110,0.03) 1px, transparent 1px, transparent 3px);
+  pointer-events:none;
+}
+header{
+  padding:18px 20px 14px 20px;
+  text-align:center;
+  position:relative;
+}
+.eyebrow{
+  font-size:11px;
+  letter-spacing:3px;
+  color:var(--purple);
+  opacity:0.75;
+  text-transform:uppercase;
+  font-weight:700;
+  margin-bottom:6px;
+}
+h1{
+  font-family:'Lora',serif;
+  font-weight:700;
+  font-style:italic;
+  font-size:34px;
+  margin:0;
+  color:var(--purple);
+  line-height:1.1;
+}
+h1 span{
+  display:block;
+  color:var(--purple);
+}
+.subtitle{
+  font-size:14.5px;
+  color:var(--purple);
+  opacity:0.7;
+  margin-top:6px;
+}
+.tabs{
+  display:flex;
+  gap:8px;
+  padding:4px 20px 16px 20px;
+}
+.tab{
+  flex:1;
+  text-align:center;
+  padding:12px 8px;
+  border-radius:10px;
+  font-weight:700;
+  font-size:14.5px;
+  cursor:pointer;
+  border:1.5px solid rgba(66,42,110,0.25);
+  background:rgba(66,42,110,0.06);
+  color:var(--purple);
+  transition:all .15s ease;
+  user-select:none;
+}
+.tab.active{
+  background:var(--purple);
+  border-color:var(--purple);
+  color:#FFCC1C;
+}
+#tabPublish{
+  background:var(--purple);
+  border-color:var(--purple);
+  color:#FFCC1C;
+}
+#tabPublish.active{
+  background:var(--purple);
+  border-color:var(--purple);
+  color:#FFCC1C;
+}
+.content{ padding:0 16px; }
+/* --- FEED VIEW --- */
+.filter-row{
+  display:flex;
+  gap:8px;
+  margin-bottom:16px;
+  overflow-x:auto;
+  padding-bottom:4px;
+}
+select.district-select{
+  flex:1;
+  background:#fff5df;
+  border:1.5px solid rgba(66,42,110,0.25);
+  color:var(--purple);
+  padding:10px 12px;
+  border-radius:9px;
+  font-family:'Inter',sans-serif;
+  font-size:15px;
+  font-weight:600;
+}
+.empty-state{
+  text-align:center;
+  padding:50px 20px;
+  color:var(--purple);
+  opacity:0.65;
+}
+.empty-state .big{ font-size:38px; margin-bottom:10px; }
+.empty-state .msg{ font-size:14px; line-height:1.5; }
+.ticket{
+  background:var(--cream);
+  border-radius:14px;
+  margin-bottom:16px;
+  overflow:hidden;
+  position:relative;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.28);
+  border:1px solid #ecd9b0;
+}
+.ticket::after{
+  content:"";
+  position:absolute; top:0; bottom:0; right:64px;
+  width:0;
+  border-left:2px dashed #e3cf9f;
+}
+.ticket-top{
+  display:flex;
+}
+.ticket-photo{
+  width:96px;
+  min-width:96px;
+  background:linear-gradient(135deg,#f1e2bd,#e7d3a2);
+  display:flex; align-items:center; justify-content:center;
+  font-size:30px;
+  background-size:cover;
+  background-position:center;
+}
+.ticket-body{
+  flex:1;
+  padding:12px 14px 12px 16px;
+}
+.ticket-negocio{
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+  color:var(--purple);
+}
+.ticket-direccion{
+  font-family:'Lora',serif;
+  font-weight:600;
+  font-size:16.5px;
+  color:var(--ink);
+  line-height:1.3;
+  margin:3px 0 5px 0;
+}
+.ticket-direccion .pin{ margin-right:3px; }
+.ticket-meta{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.ticket-price-strip{
+  width:64px;
+  min-width:64px;
+  background:var(--purple);
+  color:#FFCC1C;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:6px 4px;
+}
+.ticket-price-strip .s{ font-size:10px; opacity:0.85; margin-top:2px;}
+.ticket-price-strip .p{ font-family:'Lora',serif; font-weight:700; font-size:19px; line-height:1; }
+.ticket-bottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:9px 14px;
+  background:#fff5df;
+  border-top:1px dashed #e3cf9f;
+  font-size:11.5px;
+  color:var(--ink-soft);
+}
+.ticket-bottom .hora{ font-weight:700; color:var(--purple); }
+/* --- PUBLISH VIEW --- */
+.form-card{
+  background:var(--cream);
+  border-radius:16px;
+  padding:20px 18px 22px 18px;
+  color:var(--ink);
+  box-shadow:0 8px 24px rgba(0,0,0,0.3);
+}
+.form-title{
+  font-family:'Lora',serif;
+  font-weight:700;
+  font-style:italic;
+  font-size:22px;
+  margin:0 0 6px 0;
+  color:var(--purple);
+}
+.form-hint{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin-bottom:16px;
+  line-height:1.5;
+}
+label{
+  display:block;
+  font-size:12.5px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.4px;
+  color:var(--ink-soft);
+  margin:14px 0 6px 0;
+}
+input, select{
+  width:100%;
+  padding:12px 12px;
+  border-radius:9px;
+  border:1.5px solid #e6dcc0;
+  background:#fffdf7;
+  font-family:'Inter',sans-serif;
+  font-size:16px;
+  color:var(--ink);
+}
+input:focus, select:focus{ outline:2px solid var(--mustard); border-color:var(--mustard); }
+.row2{ display:flex; gap:10px; }
+.row2 > div{ flex:1; }
+.publish-btn{
+  width:100%;
+  margin-top:20px;
+  padding:14px;
+  border:none;
+  border-radius:11px;
+  background:var(--purple);
+  color:#FFCC1C;
+  font-weight:800;
+  font-size:15px;
+  letter-spacing:0.3px;
+  cursor:pointer;
+  box-shadow:0 6px 14px rgba(66,42,110,0.35);
+}
+.publish-btn:active{ transform:translateY(1px); }
+.publish-btn:disabled{ opacity:0.6; }
+.toast{
+  position:fixed;
+  left:50%; bottom:24px;
+  transform:translateX(-50%);
+  background:var(--purple);
+  color:#FFCC1C;
+  padding:11px 18px;
+  border-radius:30px;
+  font-size:13.5px;
+  font-weight:700;
+  box-shadow:0 6px 18px rgba(0,0,0,0.35);
+  z-index:50;
+  animation: toastin .25s ease;
+}
+@keyframes toastin{ from{opacity:0; transform:translate(-50%,10px);} to{opacity:1; transform:translate(-50%,0);} }
+.footnote{
+  text-align:center;
+  font-size:11px;
+  color:var(--purple);
+  opacity:0.6;
+  margin-top:18px;
+  padding:0 30px;
+  line-height:1.5;
+}
+/* --- LIVE MAP --- */
+.map-card{
+  background:var(--cream);
+  border-radius:14px;
+  padding:12px 12px 14px 12px;
+  margin-bottom:16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.22);
+  border:1px solid #ecd9b0;
+}
+.map-card-title{
+  font-size:11.5px;
+  font-weight:800;
+  letter-spacing:0.4px;
+  text-transform:uppercase;
+  color:var(--purple);
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+#liveMap{
+  width:100%;
+  height:260px;
+  border-radius:10px;
+  background:#f1e2bd;
+  overflow:hidden;
+}
+.map-status{
+  font-size:11px;
+  color:var(--ink-soft);
+  margin-top:7px;
+  text-align:center;
+}
+.leaflet-popup-content{ font-family:'Inter',sans-serif; font-size:12.5px; }
+.leaflet-popup-content b{ color:var(--purple); }
+/* --- CAMERA / PHOTO CAPTURE --- */
+.photo-capture-btn{
+  width:100%;
+  padding:12px;
+  border-radius:9px;
+  border:1.5px dashed #d8c48a;
+  background:#fffdf7;
+  color:var(--purple);
+  font-weight:700;
+  font-size:13.5px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+}
+.photo-preview-wrap{
+  position:relative;
+  margin-top:8px;
+  border-radius:10px;
+  overflow:hidden;
+  display:none;
+}
+.photo-preview-wrap img{
+  width:100%;
+  max-height:170px;
+  object-fit:cover;
+  display:block;
+}
+.photo-remove-btn{
+  position:absolute;
+  top:8px; right:8px;
+  background:rgba(38,41,31,0.75);
+  color:#fff;
+  border:none;
+  border-radius:20px;
+  padding:5px 10px;
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+}
 </style>
-
+</head>
+<body>
 <div class="app" id="app">
-  <header>
-    <h1>Menú <span>de Hoy</span></h1>
-    <div class="subtitle">Lo que hay para comer hoy, cerca de ti — actualizado a diario</div>
-  </header>
-
-  <div class="tabs">
-    <div class="tab active" id="tabFeed" onclick="showView('feed')">🔍 Busca tu menú</div>
-    <div class="tab" id="tabPublish" onclick="showView('publish')">📌 Publicar mi menú</div>
-  </div>
-
-  <div class="content">
-    <div id="viewFeed"></div>
-    <div id="viewPublish" style="display:none"></div>
-  </div>
-
-  <div class="footnote">Cada publicación expira a las 24 horas. Los negocios deben subir su menú todos los días para seguir apareciendo.</div>
+<header>
+<h1>Menú <span>de Hoy</span></h1>
+<div class="subtitle">Lo que hay para comer hoy, cerca de ti — actualizado a diario</div>
+</header>
+<div class="tabs">
+<div class="tab active" id="tabFeed" onclick="showView('feed')">🔍 Busca tu menú</div>
+<div class="tab" id="tabPublish" onclick="showView('publish')">📌 Publicar mi menú</div>
 </div>
-
+<div class="content">
+<div id="viewFeed"></div>
+<div id="viewPublish" style="display:none"></div>
+</div>
+<div class="footnote">Cada publicación expira a las 24 horas. Los negocios deben subir su menú todos los días para seguir apareciendo.</div>
+</div>
 <script>
 const DISTRITOS = ["Todos los distritos",
-  "Ancón","Ate","Barranco","Breña","Carabayllo","Chaclacayo","Chorrillos","Cieneguilla","Comas","El Agustino",
-  "Independencia","Jesús María","La Molina","La Victoria","Cercado de Lima","Lince","Los Olivos","Lurigancho (Chosica)","Lurín","Magdalena del Mar",
-  "Miraflores","Pachacámac","Pucusana","Pueblo Libre","Puente Piedra","Punta Hermosa","Punta Negra","Rímac","San Bartolo","San Borja",
-  "San Isidro","San Juan de Lurigancho","San Juan de Miraflores","San Luis","San Martín de Porres","San Miguel","Santa Anita","Santa María del Mar","Santa Rosa","Santiago de Surco",
-  "Surquillo","Villa El Salvador","Villa María del Triunfo",
-  "Callao","Bellavista","Carmen de la Legua Reynoso","La Perla","La Punta","Mi Perú","Ventanilla",
-  "Otro distrito"];
-
+"Ancón","Ate","Barranco","Breña","Carabayllo","Chaclacayo","Chorrillos","Cieneguilla","Comas","El Agustino",
+"Independencia","Jesús María","La Molina","La Victoria","Cercado de Lima","Lince","Los Olivos","Lurigancho (Chosica)","Lurín","Magdalena del Mar",
+"Miraflores","Pachacámac","Pucusana","Pueblo Libre","Puente Piedra","Punta Hermosa","Punta Negra","Rímac","San Bartolo","San Borja",
+"San Isidro","San Juan de Lurigancho","San Juan de Miraflores","San Luis","San Martín de Porres","San Miguel","Santa Anita","Santa María del Mar","Santa Rosa","Santiago de Surco",
+"Surquillo","Villa El Salvador","Villa María del Triunfo",
+"Callao","Bellavista","Carmen de la Legua Reynoso","La Perla","La Punta","Mi Perú","Ventanilla",
+"Otro distrito"];
 let currentView = 'feed';
 let listings = [];
 let selectedDistrict = "Todos los distritos";
-
 // --- Configuración de backend (ver /backend/README.md) ---
 // Cuando despliegues el backend, cambia USE_BACKEND a true y pon tu URL aquí.
 const USE_BACKEND = true;
 const API_BASE_URL = "https://menu-de-hoy-backend.onrender.com";
-
 async function loadListings(){
-  if(USE_BACKEND){
-    try{
-      const url = API_BASE_URL + '/api/listings' + (selectedDistrict!=="Todos los distritos" ? '?distrito='+encodeURIComponent(selectedDistrict) : '');
-      const res = await fetch(url);
-      const data = await res.json();
-      listings = data.listings || [];
-      return;
-    }catch(e){
-      // si el backend falla, seguimos con almacenamiento local como respaldo
-    }
-  }
-  try{
-    const res = await window.storage.get('menus-del-dia', true);
-    listings = res && res.value ? JSON.parse(res.value) : [];
-  }catch(e){
-    listings = [];
-  }
+if(USE_BACKEND){
+try{
+const url = API_BASE_URL + '/api/listings' + (selectedDistrict!=="Todos los distritos" ? '?distrito='+encodeURIComponent(selectedDistrict) : '');
+const res = await fetch(url);
+const data = await res.json();
+listings = data.listings || [];
+return;
+}catch(e){
+// si el backend falla, seguimos con almacenamiento local como respaldo
 }
-
+}
+try{
+const res = await window.storage.get('menus-del-dia', true);
+listings = res && res.value ? JSON.parse(res.value) : [];
+}catch(e){
+listings = [];
+}
+}
 async function saveListings(){
-  await window.storage.set('menus-del-dia', JSON.stringify(listings), true);
+await window.storage.set('menus-del-dia', JSON.stringify(listings), true);
 }
-
 function timeAgo(ts){
-  const diffMin = Math.floor((Date.now()-ts)/60000);
-  if(diffMin < 1) return "recién";
-  if(diffMin < 60) return diffMin + " min";
-  const h = Math.floor(diffMin/60);
-  return h + " h";
+const diffMin = Math.floor((Date.now()-ts)/60000);
+if(diffMin < 1) return "recién";
+if(diffMin < 60) return diffMin + " min";
+const h = Math.floor(diffMin/60);
+return h + " h";
 }
-
 function isActive(item){
-  return (Date.now() - item.timestamp) < 24*60*60*1000;
+return (Date.now() - item.timestamp) < 24*60*60*1000;
 }
-
 function districtIcon(){
-  return "📍";
+return "📍";
 }
-
 function renderFeed(){
-  const el = document.getElementById('viewFeed');
-  const active = listings.filter(isActive).sort((a,b)=>b.timestamp-a.timestamp);
-  const filtered = selectedDistrict === "Todos los distritos" ? active : active.filter(i=>i.distrito===selectedDistrict);
-
-  let html = `<div class="map-card">
-    <div class="map-card-title">🗺️ Mapa en vivo — negocios cerca de ti</div>
-    <div id="liveMap"></div>
-    <div class="map-status" id="mapStatus">Ubicando...</div>
-  </div>`;
-
-  html += `<div class="filter-row">
-    <select class="district-select" id="districtFilter" onchange="onFilterChange(this.value)">
-      ${DISTRITOS.map(d=>`<option value="${d}" ${d===selectedDistrict?'selected':''}>${d==="Todos los distritos"?"Selecciona tu distrito":d}</option>`).join('')}
-    </select>
-  </div>`;
-
-  if(filtered.length === 0){
-    html += `<div class="empty-state">
-      <div class="big">🍲</div>
-      <div class="msg">Todavía no hay menús publicados${selectedDistrict!=="Todos los distritos"?" en este distrito":" hoy"}.<br/>Sé el primer negocio en publicar el tuyo.</div>
-    </div>`;
-  } else {
-    filtered.forEach(item=>{
-      const photoStyle = item.foto ? `style="background-image:url('${item.foto.replace(/'/g,"")}')"` : '';
-      html += `<div class="ticket">
-        <div class="ticket-top">
-          <div class="ticket-photo" ${photoStyle}>${item.foto ? '' : '🍛'}</div>
-          <div class="ticket-body">
-            <div class="ticket-negocio">${escapeHtml(item.negocio)}</div>
-            <div class="ticket-direccion"><span class="pin">📍</span>${escapeHtml(item.direccion)}</div>
-            <div class="ticket-meta">
-              <span>${districtIcon()} ${escapeHtml(item.distrito)}</span>
-              <span>· publicado hace ${timeAgo(item.timestamp)}</span>
-            </div>
-          </div>
-          <div class="ticket-price-strip">
-            <div class="s">S/</div>
-            <div class="p">${escapeHtml(item.precio)}</div>
-          </div>
-        </div>
-        <div class="ticket-bottom">
-          <span>Menú de hoy</span>
-          <span class="hora">${item.horaLimite ? 'Hasta las '+escapeHtml(item.horaLimite) : 'Hasta agotar stock'}</span>
-        </div>
-      </div>`;
-    });
-  }
-
-  el.innerHTML = html;
-  initLiveMap(filtered);
+const el = document.getElementById('viewFeed');
+const active = listings.filter(isActive).sort((a,b)=>b.timestamp-a.timestamp);
+const filtered = selectedDistrict === "Todos los distritos" ? active : active.filter(i=>i.distrito===selectedDistrict);
+let html = `<div class="map-card">
+<div class="map-card-title">🗺️ Mapa en vivo — negocios cerca de ti</div>
+<div id="liveMap"></div>
+<div class="map-status" id="mapStatus">Ubicando...</div>
+</div>`;
+html += `<div class="filter-row">
+<select class="district-select" id="districtFilter" onchange="onFilterChange(this.value)">
+${DISTRITOS.map(d=>`<option value="${d}" ${d===selectedDistrict?'selected':''}>${d==="Todos los distritos"?"Selecciona tu distrito":d}</option>`).join('')}
+</select>
+</div>`;
+if(filtered.length === 0){
+html += `<div class="empty-state">
+<div class="big">🍲</div>
+<div class="msg">Todavía no hay menús publicados${selectedDistrict!=="Todos los distritos"?" en este distrito":" hoy"}.<br/>Sé el primer negocio en publicar el tuyo.</div>
+</div>`;
+} else {
+filtered.forEach(item=>{
+const photoStyle = item.foto ? `style="background-image:url('${item.foto.replace(/'/g,"")}')"` : '';
+html += `<div class="ticket">
+<div class="ticket-top">
+<div class="ticket-photo" ${photoStyle}>${item.foto ? '' : '🍛'}</div>
+<div class="ticket-body">
+<div class="ticket-negocio">${escapeHtml(item.negocio)}</div>
+<div class="ticket-direccion"><span class="pin">📍</span>${escapeHtml(item.direccion)}</div>
+<div class="ticket-meta">
+<span>${districtIcon()} ${escapeHtml(item.distrito)}</span>
+<span>· publicado hace ${timeAgo(item.timestamp)}</span>
+</div>
+</div>
+<div class="ticket-price-strip">
+<div class="s">S/</div>
+<div class="p">${escapeHtml(item.precio)}</div>
+</div>
+</div>
+<div class="ticket-bottom">
+<span>Menú de hoy</span>
+<span class="hora">${item.horaLimite ? 'Hasta las '+escapeHtml(item.horaLimite) : 'Hasta agotar stock'}</span>
+</div>
+</div>`;
+});
 }
-
+el.innerHTML = html;
+initLiveMap(filtered);
+}
 let mapInstance = null;
-
 function initLiveMap(items){
-  const statusEl = document.getElementById('mapStatus');
-  if(!window.L){
-    if(statusEl) statusEl.innerText = 'No se pudo cargar el mapa.';
-    return;
-  }
-  if(mapInstance){ mapInstance.remove(); mapInstance = null; }
-
-  const mapEl = document.getElementById('liveMap');
-  if(!mapEl) return;
-
-  const defaultCenter = [-12.0464, -77.0428]; // Lima, Perú
-  mapInstance = L.map('liveMap', { zoomControl:true, attributionControl:false }).setView(defaultCenter, 12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19 }).addTo(mapInstance);
-
-  const businessIcon = L.divIcon({
-    className: '', html: '<div style="background:#BB29BB;width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.4);"></div>',
-    iconSize:[14,14], iconAnchor:[7,7]
-  });
-  const userIcon = L.divIcon({
-    className: '', html: '<div style="background:#2f7de1;width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,0.5);"></div>',
-    iconSize:[16,16], iconAnchor:[8,8]
-  });
-
-  const bounds = [];
-  items.forEach(item=>{
-    if(typeof item.lat === 'number' && typeof item.lng === 'number'){
-      const m = L.marker([item.lat, item.lng], {icon:businessIcon}).addTo(mapInstance);
-      m.bindPopup(`<b>${escapeHtml(item.negocio)}</b><br>${escapeHtml(item.direccion||'')}<br>S/ ${escapeHtml(item.precio)}`);
-      bounds.push([item.lat, item.lng]);
-    }
-  });
-
-  if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(function(pos){
-      const userLatLng = [pos.coords.latitude, pos.coords.longitude];
-      L.marker(userLatLng, {icon:userIcon}).addTo(mapInstance).bindPopup('<b>Tú estás aquí</b>');
-      bounds.push(userLatLng);
-      if(bounds.length){
-        mapInstance.fitBounds(bounds, {padding:[24,24], maxZoom:15});
-      } else {
-        mapInstance.setView(userLatLng, 14);
-      }
-      if(statusEl) statusEl.innerText = items.length ? `${items.length} negocio${items.length===1?'':'s'} cerca de ti` : 'Aún no hay negocios publicados en tu zona';
-    }, function(){
-      if(bounds.length) mapInstance.fitBounds(bounds, {padding:[24,24], maxZoom:15});
-      if(statusEl) statusEl.innerText = 'Activa tu ubicación para verte en el mapa';
-    }, { enableHighAccuracy:true, timeout:8000 });
-  } else {
-    if(bounds.length) mapInstance.fitBounds(bounds, {padding:[24,24], maxZoom:15});
-    if(statusEl) statusEl.innerText = 'Tu navegador no soporta geolocalización';
-  }
+const statusEl = document.getElementById('mapStatus');
+if(!window.L){
+if(statusEl) statusEl.innerText = 'No se pudo cargar el mapa.';
+return;
 }
-
+if(mapInstance){ mapInstance.remove(); mapInstance = null; }
+const mapEl = document.getElementById('liveMap');
+if(!mapEl) return;
+const defaultCenter = [-12.0464, -77.0428];
+mapInstance = L.map('liveMap', { zoomControl:true, attributionControl:false }).setView(defaultCenter, 12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19 }).addTo(mapInstance);
+const businessIcon = L.divIcon({
+className: '', html: '<div style="background:#BB29BB;width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.4);"></div>',
+iconSize:[14,14], iconAnchor:[7,7]
+});
+const userIcon = L.divIcon({
+className: '', html: '<div style="background:#2f7de1;width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,0.5);"></div>',
+iconSize:[16,16], iconAnchor:[8,8]
+});
+const bounds = [];
+items.forEach(item=>{
+if(typeof item.lat === 'number' && typeof item.lng === 'number'){
+const m = L.marker([item.lat, item.lng], {icon:businessIcon}).addTo(mapInstance);
+m.bindPopup(`<b>${escapeHtml(item.negocio)}</b><br>${escapeHtml(item.direccion||'')}<br>S/ ${escapeHtml(item.precio)}`);
+bounds.push([item.lat, item.lng]);
+}
+});
+if(navigator.geolocation){
+navigator.geolocation.getCurrentPosition(function(pos){
+const userLatLng = [pos.coords.latitude, pos.coords.longitude];
+L.marker(userLatLng, {icon:userIcon}).addTo(mapInstance).bindPopup('<b>Tú estás aquí</b>');
+bounds.push(userLatLng);
+if(bounds.length){
+mapInstance.fitBounds(bounds, {padding:[24,24], maxZoom:15});
+} else {
+mapInstance.setView(userLatLng, 14);
+}
+if(statusEl) statusEl.innerText = items.length ? `${items.length} negocio${items.length===1?'':'s'} cerca de ti` : 'Aún no hay negocios publicados en tu zona';
+}, function(){
+if(bounds.length) mapInstance.fitBounds(bounds, {padding:[24,24], maxZoom:15});
+if(statusEl) statusEl.innerText = 'Activa tu ubicación para verte en el mapa';
+}, { enableHighAccuracy:true, timeout:8000 });
+} else {
+if(bounds.length) mapInstance.fitBounds(bounds, {padding:[24,24], maxZoom:15});
+if(statusEl) statusEl.innerText = 'Tu navegador no soporta geolocalización';
+}
+}
 function onFilterChange(val){
-  selectedDistrict = val;
-  renderFeed();
+selectedDistrict = val;
+renderFeed();
 }
-
 function renderPublish(){
-  const el = document.getElementById('viewPublish');
-  el.innerHTML = `
-    <div class="form-card">
-      <div class="form-title">Publica el menú de hoy</div>
-      <div class="form-hint">Tu publicación aparecerá en el feed por 24 horas. Pasado ese tiempo, desaparece automáticamente — vuelve mañana a publicar el nuevo menú.</div>
-
-      <label>Nombre de tu negocio</label>
-      <input type="text" id="fNegocio" placeholder="Ej: Sazón de la Tía Rosa" />
-
-      <label>Distrito</label>
-      <select id="fDistrito">
-        ${DISTRITOS.filter(d=>d!=="Todos los distritos").map(d=>`<option value="${d}">${d}</option>`).join('')}
-      </select>
-
-      <label>Dirección</label>
-      <input type="text" id="fDireccion" placeholder="Ej: Av. Larco 345, Miraflores" />
-
-      <div class="row2">
-        <div>
-          <label>Precio (S/)</label>
-          <input type="number" id="fPrecio" placeholder="12" min="1" />
-        </div>
-        <div>
-          <label>Disponible hasta</label>
-          <input type="time" id="fHora" />
-        </div>
-      </div>
-
-      <label>Foto del Menú</label>
-      <input type="file" id="fFotoInput" accept="image/*" capture="environment" style="display:none" onchange="onPhotoSelected(event)" />
-      <button type="button" class="photo-capture-btn" id="photoCaptureBtn" onclick="document.getElementById('fFotoInput').click()">📷 Tomar foto del menú</button>
-      <div class="photo-preview-wrap" id="photoPreviewWrap">
-        <img id="photoPreviewImg" src="" />
-        <button type="button" class="photo-remove-btn" onclick="removePhoto()">Quitar</button>
-      </div>
-
-      <button class="publish-btn" id="publishBtn" onclick="publishListing()">Publicar menú de hoy</button>
-    </div>
-  `;
+const el = document.getElementById('viewPublish');
+el.innerHTML = `
+<div class="form-card">
+<div class="form-title">Publica el menú de hoy</div>
+<div class="form-hint">Tu publicación aparecerá en el feed por 24 horas. Pasado ese tiempo, desaparece automáticamente — vuelve mañana a publicar el nuevo menú.</div>
+<label>Nombre de tu negocio</label>
+<input type="text" id="fNegocio" placeholder="Ej: Sazón de la Tía Rosa" />
+<label>Distrito</label>
+<select id="fDistrito">
+${DISTRITOS.filter(d=>d!=="Todos los distritos").map(d=>`<option value="${d}">${d}</option>`).join('')}
+</select>
+<label>Dirección</label>
+<input type="text" id="fDireccion" placeholder="Ej: Av. Larco 345, Miraflores" />
+<div class="row2">
+<div>
+<label>Precio (S/)</label>
+<input type="number" id="fPrecio" placeholder="12" min="1" />
+</div>
+<div>
+<label>Disponible hasta</label>
+<input type="time" id="fHora" />
+</div>
+</div>
+<label>Foto del Menú</label>
+<input type="file" id="fFotoInput" accept="image/*" capture="environment" style="display:none" onchange="onPhotoSelected(event)" />
+<button type="button" class="photo-capture-btn" id="photoCaptureBtn" onclick="document.getElementById('fFotoInput').click()">📷 Tomar foto del menú</button>
+<div class="photo-preview-wrap" id="photoPreviewWrap">
+<img id="photoPreviewImg" src="" />
+<button type="button" class="photo-remove-btn" onclick="removePhoto()">Quitar</button>
+</div>
+<button class="publish-btn" id="publishBtn" onclick="publishListing()">Publicar menú de hoy</button>
+</div>
+`;
 }
-
 let capturedPhotoData = null;
-
 function onPhotoSelected(evt){
-  const file = evt.target.files && evt.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e){
-    const img = new Image();
-    img.onload = function(){
-      const maxDim = 640;
-      let w = img.width, h = img.height;
-      if(w > h && w > maxDim){ h = Math.round(h * maxDim / w); w = maxDim; }
-      else if(h > maxDim){ w = Math.round(w * maxDim / h); h = maxDim; }
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      capturedPhotoData = canvas.toDataURL('image/jpeg', 0.6);
-      document.getElementById('photoPreviewImg').src = capturedPhotoData;
-      document.getElementById('photoPreviewWrap').style.display = 'block';
-      document.getElementById('photoCaptureBtn').innerText = '📷 Volver a tomar foto';
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
+const file = evt.target.files && evt.target.files[0];
+if(!file) return;
+const reader = new FileReader();
+reader.onload = function(e){
+const img = new Image();
+img.onload = function(){
+const maxDim = 640;
+let w = img.width, h = img.height;
+if(w > h && w > maxDim){ h = Math.round(h * maxDim / w); w = maxDim; }
+else if(h > maxDim){ w = Math.round(w * maxDim / h); h = maxDim; }
+const canvas = document.createElement('canvas');
+canvas.width = w; canvas.height = h;
+canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+capturedPhotoData = canvas.toDataURL('image/jpeg', 0.6);
+document.getElementById('photoPreviewImg').src = capturedPhotoData;
+document.getElementById('photoPreviewWrap').style.display = 'block';
+document.getElementById('photoCaptureBtn').innerText = '📷 Volver a tomar foto';
+};
+img.src = e.target.result;
+};
+reader.readAsDataURL(file);
 }
-
 function removePhoto(){
-  capturedPhotoData = null;
-  document.getElementById('fFotoInput').value = '';
-  document.getElementById('photoPreviewWrap').style.display = 'none';
-  document.getElementById('photoCaptureBtn').innerText = '📷 Tomar foto del menú';
+capturedPhotoData = null;
+document.getElementById('fFotoInput').value = '';
+document.getElementById('photoPreviewWrap').style.display = 'none';
+document.getElementById('photoCaptureBtn').innerText = '📷 Tomar foto del menú';
 }
-
 function escapeHtml(str){
-  if(!str) return '';
-  const d = document.createElement('div');
-  d.innerText = str;
-  return d.innerHTML;
+if(!str) return '';
+const d = document.createElement('div');
+d.innerText = str;
+return d.innerHTML;
 }
-
 async function publishListing(){
-  const negocio = document.getElementById('fNegocio').value.trim();
-  const distrito = document.getElementById('fDistrito').value;
-  const direccion = document.getElementById('fDireccion').value.trim();
-  const precio = document.getElementById('fPrecio').value.trim();
-  const horaLimite = document.getElementById('fHora').value;
-  const foto = capturedPhotoData || '';
-
-  if(!negocio || !direccion || !precio){
-    showToast('Completa nombre, dirección y precio para publicar', true);
-    return;
-  }
-
-  const btn = document.getElementById('publishBtn');
-  btn.disabled = true;
-  btn.innerText = 'Publicando...';
-
-  const getCoords = () => new Promise((resolve) => {
-    if(!navigator.geolocation){ resolve({lat:null,lng:null}); return; }
-    navigator.geolocation.getCurrentPosition(
-      pos => resolve({lat:pos.coords.latitude, lng:pos.coords.longitude}),
-      () => resolve({lat:null,lng:null}),
-      { enableHighAccuracy:true, timeout:8000 }
-    );
-  });
-
-  try{
-    const coords = await getCoords();
-    const item = {
-      id: 'listing_' + Date.now() + '_' + Math.floor(Math.random()*10000),
-      negocio, distrito, direccion, precio, horaLimite, foto,
-      lat: coords.lat, lng: coords.lng,
-      timestamp: Date.now()
-    };
-
-    if(USE_BACKEND){
-      const res = await fetch(API_BASE_URL + '/api/listings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(item)
-      });
-      if(!res.ok){
-        const err = await res.json().catch(()=>({error:'Error desconocido'}));
-        throw new Error(err.error || 'No se pudo publicar');
-      }
-      const result = await res.json();
-      listings.push(result.item);
-    } else {
-      listings.push(item);
-      await saveListings();
-    }
-
-    showToast('¡Publicado! Ya está visible en el feed de hoy 🎉');
-    document.getElementById('fNegocio').value='';
-    document.getElementById('fDireccion').value='';
-    document.getElementById('fPrecio').value='';
-    document.getElementById('fHora').value='';
-    removePhoto();
-  }catch(e){
-    showToast(e && e.message ? e.message : 'No se pudo publicar, intenta de nuevo', true);
-  }finally{
-    btn.disabled = false;
-    btn.innerText = 'Publicar menú de hoy';
-  }
+const negocio = document.getElementById('fNegocio').value.trim();
+const distrito = document.getElementById('fDistrito').value;
+const direccion = document.getElementById('fDireccion').value.trim();
+const precio = document.getElementById('fPrecio').value.trim();
+const horaLimite = document.getElementById('fHora').value;
+const foto = capturedPhotoData || '';
+if(!negocio || !direccion || !precio){
+showToast('Completa nombre, dirección y precio para publicar', true);
+return;
 }
-
+const btn = document.getElementById('publishBtn');
+btn.disabled = true;
+btn.innerText = 'Publicando...';
+const getCoords = () => new Promise((resolve) => {
+if(!navigator.geolocation){ resolve({lat:null,lng:null}); return; }
+navigator.geolocation.getCurrentPosition(
+pos => resolve({lat:pos.coords.latitude, lng:pos.coords.longitude}),
+() => resolve({lat:null,lng:null}),
+{ enableHighAccuracy:true, timeout:8000 }
+);
+});
+try{
+const coords = await getCoords();
+const item = {
+id: 'listing_' + Date.now() + '_' + Math.floor(Math.random()*10000),
+negocio, distrito, direccion, precio, horaLimite, foto,
+lat: coords.lat, lng: coords.lng,
+timestamp: Date.now()
+};
+if(USE_BACKEND){
+const res = await fetch(API_BASE_URL + '/api/listings', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify(item)
+});
+if(!res.ok){
+const err = await res.json().catch(()=>({error:'Error desconocido'}));
+throw new Error(err.error || 'No se pudo publicar');
+}
+const result = await res.json();
+listings.push(result.item);
+} else {
+listings.push(item);
+await saveListings();
+}
+showToast('¡Publicado! Ya está visible en el feed de hoy 🎉');
+document.getElementById('fNegocio').value='';
+document.getElementById('fDireccion').value='';
+document.getElementById('fPrecio').value='';
+document.getElementById('fHora').value='';
+removePhoto();
+}catch(e){
+showToast(e && e.message ? e.message : 'No se pudo publicar, intenta de nuevo', true);
+}finally{
+btn.disabled = false;
+btn.innerText = 'Publicar menú de hoy';
+}
+}
 function showToast(msg, isError){
-  const existing = document.querySelector('.toast');
-  if(existing) existing.remove();
-  const t = document.createElement('div');
-  t.className = 'toast';
-  if(isError) t.style.background = '#c0392b';
-  t.innerText = msg;
-  document.body.appendChild(t);
-  setTimeout(()=>t.remove(), 2600);
+const existing = document.querySelector('.toast');
+if(existing) existing.remove();
+const t = document.createElement('div');
+t.className = 'toast';
+if(isError) t.style.background = '#c0392b';
+t.innerText = msg;
+document.body.appendChild(t);
+setTimeout(()=>t.remove(), 2600);
 }
-
 function showView(view){
-  currentView = view;
-  document.getElementById('tabFeed').classList.toggle('active', view==='feed');
-  document.getElementById('tabPublish').classList.toggle('active', view==='publish');
-  document.getElementById('viewFeed').style.display = view==='feed' ? 'block' : 'none';
-  document.getElementById('viewPublish').style.display = view==='publish' ? 'block' : 'none';
-  if(view==='feed') renderFeed();
+currentView = view;
+document.getElementById('tabFeed').classList.toggle('active', view==='feed');
+document.getElementById('tabPublish').classList.toggle('active', view==='publish');
+document.getElementById('viewFeed').style.display = view==='feed' ? 'block' : 'none';
+document.getElementById('viewPublish').style.display = view==='publish' ? 'block' : 'none';
+if(view==='feed') renderFeed();
 }
-
 async function init(){
-  document.getElementById('viewFeed').innerHTML = '<div class="empty-state"><div class="big">⏳</div><div class="msg">Cargando menús de hoy...</div></div>';
-  await loadListings();
-  renderFeed();
-  renderPublish();
+document.getElementById('viewFeed').innerHTML = '<div class="empty-state"><div class="big">⏳</div><div class="msg">Cargando menús de hoy...</div></div>';
+await loadListings();
+renderFeed();
+renderPublish();
 }
-
 init();
 </script>
+</body>
+</html>
