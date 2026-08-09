@@ -5,30 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Menú de Hoy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Baloo+2:wght@800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
 :root{
-  --chalk-bg:#FFCC1C;
-  --chalk-bg2:#FFD84D;
+  --chalk-bg:#FFD646;
+  --chalk-bg2:#FFD646;
   --chalk-line:#E0AC00;
   --cream:#fffbf2;
   --cream2:#fff5df;
   --chili:#c0392b;
   --chili-dark:#9c2e21;
-  --mustard:#BB29BB;
+  --mustard:#FF007F;
   --ink:#26291f;
   --ink-soft:#5c5e50;
-  --good:#BB29BB;
-  --purple:#BB29BB;
+  --good:#FF007F;
+  --purple:#FF007F;
 }
 *{box-sizing:border-box;}
-body{margin:0;padding:0;background:transparent;}
+body{margin:0;padding:0;background:transparent;font-family:'Poppins',sans-serif;font-weight:700;}
 .app{
-  font-family:'Inter',sans-serif;
+  font-family:'Poppins',sans-serif;
+  
+  font-weight:700;
   background: linear-gradient(to bottom, var(--chalk-bg2) 0%, var(--chalk-bg) 45%);
-  background-color:#FFCC1C;
+  background-color:#FFD646;
   min-height:100vh;
   color:var(--purple);
   padding:0 0 40px 0;
@@ -59,9 +61,8 @@ header{
   margin-bottom:6px;
 }
 h1{
-  font-family:'Lora',serif;
-  font-weight:700;
-  font-style:italic;
+  font-family:'Baloo 2',cursive;
+  font-weight:800;
   font-size:34px;
   margin:0;
   color:var(--purple);
@@ -99,17 +100,17 @@ h1 span{
 .tab.active{
   background:var(--purple);
   border-color:var(--purple);
-  color:#FFCC1C;
+  color:#FFD646;
 }
 #tabPublish{
   background:var(--purple);
   border-color:var(--purple);
-  color:#FFCC1C;
+  color:#FFD646;
 }
 #tabPublish.active{
   background:var(--purple);
   border-color:var(--purple);
-  color:#FFCC1C;
+  color:#FFD646;
 }
 .content{ padding:0 16px; }
 /* --- FEED VIEW --- */
@@ -127,9 +128,17 @@ select.district-select{
   color:var(--purple);
   padding:10px 12px;
   border-radius:9px;
-  font-family:'Inter',sans-serif;
+  font-family:'Poppins',sans-serif;
   font-size:15px;
   font-weight:600;
+}
+select.district-select option{
+  color:var(--ink);
+  background:#fff5df;
+}
+select#fDistrito option{
+  color:var(--ink);
+  background:#fffdf7;
 }
 .empty-state{
   text-align:center;
@@ -178,7 +187,7 @@ select.district-select{
   color:var(--purple);
 }
 .ticket-direccion{
-  font-family:'Lora',serif;
+  font-family:'Poppins',sans-serif;
   font-weight:600;
   font-size:16.5px;
   color:var(--ink);
@@ -197,7 +206,7 @@ select.district-select{
   width:64px;
   min-width:64px;
   background:var(--purple);
-  color:#FFCC1C;
+  color:#FFD646;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -206,7 +215,7 @@ select.district-select{
   padding:6px 4px;
 }
 .ticket-price-strip .s{ font-size:10px; opacity:0.85; margin-top:2px;}
-.ticket-price-strip .p{ font-family:'Lora',serif; font-weight:700; font-size:19px; line-height:1; }
+.ticket-price-strip .p{ font-family:'Poppins',sans-serif; font-weight:700; font-size:19px; line-height:1; }
 .ticket-bottom{
   display:flex;
   justify-content:space-between;
@@ -227,9 +236,9 @@ select.district-select{
   box-shadow:0 8px 24px rgba(0,0,0,0.3);
 }
 .form-title{
-  font-family:'Lora',serif;
+  font-family:'Poppins',sans-serif;
   font-weight:700;
-  font-style:italic;
+  
   font-size:22px;
   margin:0 0 6px 0;
   color:var(--purple);
@@ -255,13 +264,77 @@ input, select{
   border-radius:9px;
   border:1.5px solid #e6dcc0;
   background:#fffdf7;
-  font-family:'Inter',sans-serif;
+  font-family:'Poppins',sans-serif;
   font-size:16px;
   color:var(--ink);
 }
 input:focus, select:focus{ outline:2px solid var(--mustard); border-color:var(--mustard); }
 .row2{ display:flex; gap:10px; }
 .row2 > div{ flex:1; }
+.consent-label{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  margin-top:16px;
+  font-size:12.5px;
+  font-weight:400;
+  color:var(--ink);
+  line-height:1.4;
+  cursor:pointer;
+}
+.consent-label input[type="checkbox"]{
+  width:auto;
+  margin-top:2px;
+  flex-shrink:0;
+  cursor:pointer;
+}
+.consent-label a{ color:var(--purple); font-weight:600; text-decoration:underline; }
+.privacy-modal-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.privacy-modal{
+  background:#fffdf7;
+  border-radius:16px;
+  max-width:480px;
+  width:100%;
+  max-height:80vh;
+  overflow-y:auto;
+  padding:24px;
+  position:relative;
+}
+.privacy-modal h2{
+  font-family:'Baloo 2',cursive;
+  color:var(--purple);
+  font-size:22px;
+  margin:0 0 12px;
+}
+.privacy-modal h3{
+  color:var(--purple);
+  font-size:15px;
+  margin:18px 0 6px;
+}
+.privacy-modal p, .privacy-modal li{
+  font-size:13.5px;
+  line-height:1.5;
+  color:var(--ink);
+}
+.privacy-modal-close{
+  position:absolute;
+  top:14px;
+  right:14px;
+  background:none;
+  border:none;
+  font-size:22px;
+  cursor:pointer;
+  color:var(--purple);
+}
 .publish-btn{
   width:100%;
   margin-top:20px;
@@ -269,7 +342,7 @@ input:focus, select:focus{ outline:2px solid var(--mustard); border-color:var(--
   border:none;
   border-radius:11px;
   background:var(--purple);
-  color:#FFCC1C;
+  color:#FFD646;
   font-weight:800;
   font-size:15px;
   letter-spacing:0.3px;
@@ -283,7 +356,7 @@ input:focus, select:focus{ outline:2px solid var(--mustard); border-color:var(--
   left:50%; bottom:24px;
   transform:translateX(-50%);
   background:var(--purple);
-  color:#FFCC1C;
+  color:#FFD646;
   padding:11px 18px;
   border-radius:30px;
   font-size:13.5px;
@@ -335,7 +408,7 @@ input:focus, select:focus{ outline:2px solid var(--mustard); border-color:var(--
   margin-top:7px;
   text-align:center;
 }
-.leaflet-popup-content{ font-family:'Inter',sans-serif; font-size:12.5px; }
+.leaflet-popup-content{ font-family:'Poppins',sans-serif; font-size:12.5px; }
 .leaflet-popup-content b{ color:var(--purple); }
 /* --- CAMERA / PHOTO CAPTURE --- */
 .photo-capture-btn{
@@ -383,19 +456,19 @@ input:focus, select:focus{ outline:2px solid var(--mustard); border-color:var(--
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180x180.png">
-<meta name="theme-color" content="#FA008A">
+<meta name="theme-color" content="#FF007F">
 </head>
 <body>
 <div class="app" id="app">
 <header>
 <h1>Menú <span>de Hoy</span></h1>
-<div class="subtitle">Lo que hay para comer hoy, cerca de ti — actualizado a diario</div><div class="subtitle">Lo que hay para comer hoy, cerca de ti — actualizado a diario</div>
-
-<div id="install-banner" style="display:none; background:#FA008A; color:#fff; padding:12px 16px; border-radius:12px; margin:12px 0; text-align:center; font-family:Inter, sans-serif; cursor:pointer;" onclick="handleInstallClick()">
+<div class="subtitle">Lo que hay para comer hoy, cerca de ti — actualizado a diario</div>
+ 
+<div id="install-banner" style="display:none; background:#FF007F; color:#fff; padding:12px 16px; border-radius:12px; margin:12px 0; text-align:center; font-family:Poppins, sans-serif; cursor:pointer;" onclick="handleInstallClick()">
   📲 Agrega la app a tu celular
 </div>
-
-<div id="ios-instructions" style="display:none; background:#fff; border:2px solid #FA008A; padding:14px; border-radius:12px; margin:12px 0; font-family:Inter, sans-serif; color:#333;">
+ 
+<div id="ios-instructions" style="display:none; background:#fff; border:2px solid #FF007F; padding:14px; border-radius:12px; margin:12px 0; font-family:Poppins, sans-serif; color:#333;">
   Toca el ícono de <strong>Compartir</strong> (⬆️) en Safari y luego selecciona <strong>"Agregar a pantalla de inicio"</strong>.
 </div>
 </header>
@@ -522,7 +595,7 @@ const defaultCenter = [-12.0464, -77.0428];
 mapInstance = L.map('liveMap', { zoomControl:true, attributionControl:false }).setView(defaultCenter, 12);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19 }).addTo(mapInstance);
 const businessIcon = L.divIcon({
-className: '', html: '<div style="background:#BB29BB;width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.4);"></div>',
+className: '', html: '<div style="background:#FF007F;width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.4);"></div>',
 iconSize:[14,14], iconAnchor:[7,7]
 });
 const userIcon = L.divIcon({
@@ -557,6 +630,12 @@ if(bounds.length) mapInstance.fitBounds(bounds, {padding:[24,24], maxZoom:15});
 if(statusEl) statusEl.innerText = 'Tu navegador no soporta geolocalización';
 }
 }
+function showPrivacyPolicy(){
+document.getElementById('privacyModalOverlay').style.display = 'flex';
+}
+function closePrivacyPolicy(){
+document.getElementById('privacyModalOverlay').style.display = 'none';
+}
 function onFilterChange(val){
 selectedDistrict = val;
 renderFeed();
@@ -566,7 +645,7 @@ const el = document.getElementById('viewPublish');
 el.innerHTML = `
 <div class="form-card">
 <div class="form-title">Publica el menú de hoy</div>
-<div class="form-hint">Tu publicación aparecerá en el feed por 24 horas. Pasado ese tiempo, desaparece automáticamente — vuelve mañana a publicar el nuevo menú.</div>
+<div class="form-hint">Tu publicación aparecerá <strong>en la app</strong> por 24 horas. Pasado ese tiempo, desaparece automáticamente — vuelve mañana a publicar el nuevo menú.</div>
 <label>Nombre de tu negocio</label>
 <input type="text" id="fNegocio" placeholder="Ej: Sazón de la Tía Rosa" />
 <label>Distrito</label>
@@ -592,6 +671,10 @@ ${DISTRITOS.filter(d=>d!=="Todos los distritos").map(d=>`<option value="${d}">${
 <img id="photoPreviewImg" src="" />
 <button type="button" class="photo-remove-btn" onclick="removePhoto()">Quitar</button>
 </div>
+<label class="consent-label">
+<input type="checkbox" id="fConsent" />
+Acepto que el nombre de mi negocio, dirección, foto del menú y ubicación se publiquen durante 24 horas, según la <a href="#" onclick="showPrivacyPolicy();return false;">Política de Privacidad</a>.
+</label>
 <button class="publish-btn" id="publishBtn" onclick="publishListing()">Publicar menú de hoy</button>
 </div>
 `;
@@ -641,6 +724,11 @@ const horaLimite = document.getElementById('fHora').value;
 const foto = capturedPhotoData || '';
 if(!negocio || !direccion || !precio){
 showToast('Completa nombre, dirección y precio para publicar', true);
+return;
+}
+const consentChecked = document.getElementById('fConsent').checked;
+if(!consentChecked){
+showToast('Debes aceptar la Política de Privacidad para publicar', true);
 return;
 }
 const btn = document.getElementById('publishBtn');
@@ -722,17 +810,17 @@ let deferredPrompt;
 const banner = document.getElementById('install-banner');
 const iosBox = document.getElementById('ios-instructions');
 const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
-
+ 
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
   banner.style.display = 'block';
 });
-
+ 
 if (isIOS && !window.navigator.standalone) {
   banner.style.display = 'block';
 }
-
+ 
 function handleInstallClick() {
   if (isIOS) {
     iosBox.style.display = 'block';
@@ -746,5 +834,22 @@ function handleInstallClick() {
   }
 }
 </script>
+<div class="privacy-modal-overlay" id="privacyModalOverlay" onclick="if(event.target===this) closePrivacyPolicy()">
+<div class="privacy-modal">
+<button class="privacy-modal-close" onclick="closePrivacyPolicy()">✕</button>
+<h2>Política de Privacidad</h2>
+<p>Menú de Hoy respeta tu privacidad y trata tus datos conforme a la Ley N.º 29733, Ley de Protección de Datos Personales del Perú.</p>
+<h3>¿Qué datos recopilamos?</h3>
+<p>Cuando publicas un menú, recopilamos: nombre de tu negocio, dirección, distrito, precio, foto del menú y tu ubicación geográfica (si la activas). También registramos tu dirección IP de forma temporal para prevenir abuso (límite de publicaciones diarias).</p>
+<h3>¿Para qué usamos estos datos?</h3>
+<p>Únicamente para mostrar tu publicación en el mapa y feed de la app, y para aplicar el límite de publicaciones por día.</p>
+<h3>¿Cuánto tiempo los conservamos?</h3>
+<p>Cada publicación se elimina automáticamente 24 horas después de ser creada. No conservamos tus datos más allá de ese plazo.</p>
+<h3>Tus derechos</h3>
+<p>Puedes solicitar acceso, rectificación o eliminación de tus datos antes de que expiren automáticamente, escribiendo a <a href="mailto:menudehoy.contacto@gmail.com">menudehoy.contacto@gmail.com</a>.</p>
+<h3>Seguridad</h3>
+<p>Aplicamos medidas técnicas razonables para proteger tus datos mientras están almacenados.</p>
+</div>
+</div>
 </body>
 </html>
