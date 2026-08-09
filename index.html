@@ -272,7 +272,7 @@ input:focus, select:focus{ outline:2px solid var(--mustard); border-color:var(--
 .row2{ display:flex; gap:10px; }
 .row2 > div{ flex:1; min-width:0; }
 .row2 input{ width:100%; min-width:0; box-sizing:border-box; }
-input[type="time"]{ width:100%; min-width:0; box-sizing:border-box; -webkit-appearance:none; }
+input[type="time"]{ width:100%; min-width:0; box-sizing:border-box; -webkit-appearance:none; min-height:44px; padding:10px 11px; }
 .consent-label{
   display:flex;
   align-items:flex-start;
@@ -671,14 +671,27 @@ ${DISTRITOS.filter(d=>d!=="Todos los distritos").map(d=>`<option value="${d}">${
 </select>
 <label>Dirección</label>
 <input type="text" id="fDireccion" placeholder="Ej: Av. Larco 345, Miraflores" />
-<div class="row2">
-<div>
-<label>Precio (S/)</label>
-<input type="number" id="fPrecio" placeholder="12" min="1" />
+<div class="row2" style="display:flex; gap:8px;">
+<div style="flex:1;">
+<label style="margin:7px 0 3px 0;">Precio (S/)</label>
+<input type="number" id="fPrecio" placeholder="12" min="1" style="width:100%; box-sizing:border-box; text-align:center;" />
 </div>
-<div>
-<label>Disponible hasta</label>
-<input type="time" id="fHora" />
+<div style="flex:1;">
+<label style="white-space:nowrap; margin:7px 0 3px 0;">Disponible hasta</label>
+<select id="fHoraHour" style="width:100%; box-sizing:border-box; text-align:center; text-align-last:center;">
+<option value="">Hora</option>
+<option value="1">1</option><option value="2">2</option><option value="3">3</option>
+<option value="4">4</option><option value="5">5</option><option value="6">6</option>
+<option value="7">7</option><option value="8">8</option><option value="9">9</option>
+<option value="10">10</option><option value="11">11</option><option value="12">12</option>
+</select>
+</div>
+<div style="flex:1;">
+<label style="margin:7px 0 3px 0;">&nbsp;</label>
+<select id="fHoraPeriod" style="width:100%; box-sizing:border-box; text-align:center; text-align-last:center;">
+<option value="PM">PM</option>
+<option value="AM">AM</option>
+</select>
 </div>
 </div>
 <label>Foto del Menú</label>
@@ -737,7 +750,9 @@ const negocio = document.getElementById('fNegocio').value.trim();
 const distrito = document.getElementById('fDistrito').value;
 const direccion = document.getElementById('fDireccion').value.trim();
 const precio = document.getElementById('fPrecio').value.trim();
-const horaLimite = document.getElementById('fHora').value;
+const hourVal = document.getElementById('fHoraHour').value;
+const periodVal = document.getElementById('fHoraPeriod').value;
+const horaLimite = hourVal ? `${hourVal}:00 ${periodVal}` : '';
 const foto = capturedPhotoData || '';
 if(!negocio || !direccion || !precio){
 showToast('Completa nombre, dirección y precio para publicar', true);
@@ -759,12 +774,27 @@ pos => resolve({lat:pos.coords.latitude, lng:pos.coords.longitude}),
 { enableHighAccuracy:true, timeout:8000 }
 );
 });
+const geocodeAddress = async (direccion, distrito) => {
 try{
-const coords = await getCoords();
+const query = encodeURIComponent(`${direccion}, ${distrito}, Lima, Perú`);
+const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=pe&q=${query}`);
+const data = await res.json();
+if(data && data.length > 0){
+return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+}
+return { lat: null, lng: null };
+}catch(e){
+return { lat: null, lng: null };
+}
+};
+try{
+const [geoCoords, gpsCoords] = await Promise.all([geocodeAddress(direccion, distrito), getCoords()]);
 const item = {
 id: 'listing_' + Date.now() + '_' + Math.floor(Math.random()*10000),
 negocio, distrito, direccion, precio, horaLimite, foto,
-lat: coords.lat, lng: coords.lng,
+lat: geoCoords.lat !== null ? geoCoords.lat : gpsCoords.lat,
+lng: geoCoords.lng !== null ? geoCoords.lng : gpsCoords.lng,
+gpsLat: gpsCoords.lat, gpsLng: gpsCoords.lng,
 timestamp: Date.now()
 };
 if(USE_BACKEND){
@@ -787,7 +817,7 @@ showToast('¡Publicado! Ya está visible en el feed de hoy 🎉');
 document.getElementById('fNegocio').value='';
 document.getElementById('fDireccion').value='';
 document.getElementById('fPrecio').value='';
-document.getElementById('fHora').value='';
+document.getElementById('fHoraHour').value='';
 removePhoto();
 }catch(e){
 showToast(e && e.message ? e.message : 'No se pudo publicar, intenta de nuevo', true);
